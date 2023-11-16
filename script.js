@@ -2,7 +2,7 @@
     const canvasTakePic = document.querySelector('.photo');
 
     if (navigator.getUserMedia) {
-        navigator.mediaDevices(MediaStreamTrack as any).getSources((sources: SourceInfo[]) => {
+        navigator.mediaDevices(MediaStreamTrack).getSources((sources: SourceInfo[]) => {
     
             this.videoSources = sources.filter((source: SourceInfo) => {
               return source.kind === 'video';
