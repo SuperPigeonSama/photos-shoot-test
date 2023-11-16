@@ -1,17 +1,21 @@
     const videoTakePic = document.querySelector('.player');
     const canvasTakePic = document.querySelector('.photo');
+    const videoSourcePic = document.querySelector('#videoSource');
     const listDevicesSupported = [];
 
-    navigator.mediaDevices.enumerateDevices()
-        .then(listDevicesVideo)
-        .then(getStreamVideo)
-        .then(function (mediaStream) {
-            videoTakePic.srcObject = mediaStream;
-            videoTakePic.onloadedmetadata = function(e) {
-                videoTakePic.play();
-            };
-        })
-        .catch(showErrorCamera);
+    changeStream();
+    function changeStream() {
+        navigator.mediaDevices.enumerateDevices()
+            .then(listDevicesVideo)
+            .then(getStreamVideo)
+            .then(function (mediaStream) {
+                videoTakePic.srcObject = mediaStream;
+                videoTakePic.onloadedmetadata = function(e) {
+                    videoTakePic.play();
+                };
+            })
+            .catch(showErrorCamera);
+    }
     
     function listDevicesVideo(deviceInfos) {
       window.deviceInfos = deviceInfos; // make available to console
@@ -34,8 +38,9 @@
       }
         
       const videoConstraints = {
-        video: {deviceId: listDevicesSupported.length ? listDevicesSupported[0] : undefined}
+        video: listDevicesSupported.length ? { deviceId: listDevicesSupported[0] } : true
       };
+        console.lof(videoConstraints);
       return navigator.mediaDevices.getUserMedia(constraints);
     }
 
@@ -67,5 +72,5 @@
     }
 
     function showErrorCamera() {
-        videoTakePic.html = "<strong>Erreur lors de la récupération de la caméra.</strong>";
+        videoTakePic.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
     }
