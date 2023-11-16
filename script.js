@@ -33,7 +33,6 @@
         });
       }
         
-      alert(listDevicesSupported[0]);
       const videoConstraints = {
         video: {deviceId: listDevicesSupported.length ? listDevicesSupported[0] : undefined}
       };
