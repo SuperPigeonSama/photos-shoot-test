@@ -4,7 +4,7 @@
     const strip = document.querySelector('.strip');
     const snap = document.querySelector('.snap'); 
 
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia({ video: true, facingMode: "environment" })
     .then(function(mediaStream) {
       video.srcObject = mediaStream;
       video.onloadedmetadata = function(e) {
@@ -18,6 +18,10 @@
     document.querySelector(".clickPhoto").addEventListener("click", function() {
       takePhoto();
     });
+
+    function () {
+
+    }
     
     function takePhoto() {
         canvas.width = video.videoWidth;
