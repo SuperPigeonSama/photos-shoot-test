@@ -7,7 +7,9 @@
             var videoDevices = [0,0];
             var videoDeviceIndex = 0;
             devices.forEach(function(device) {
-                if (device.kind == "videoinput") {  
+                console.log(device.kind + ": " + device.label +
+        " id = " + device.deviceId);
+                if (device.kind == "videoinput") {
                     videoDevices[videoDeviceIndex++] =  device.deviceId;    
                 }
             });
