@@ -1,7 +1,7 @@
     const videoTakePic = document.querySelector('.player');
     const canvasTakePic = document.querySelector('.photo');
 
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" })
+    navigator.mediaDevices.getUserMedia({video: { facingMode: { exact: "environment" } } })
     .then(function(mediaStream) {
       videoTakePic.srcObject = mediaStream;
       videoTakePic.onloadedmetadata = function(e) {
