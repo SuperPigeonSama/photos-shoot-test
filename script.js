@@ -27,6 +27,8 @@
         .then(function(mediaStream) {  
           if (window.webkitURL) {
             video.src = window.webkitURL.createObjectURL(mediaStream);
+          } else if (video.srcObject !== undefined) {
+            video.srcObject = stream;
           } else {
             videoTakePic.srcObject = mediaStream;
           }
