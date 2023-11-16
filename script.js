@@ -5,9 +5,11 @@
     navigator.mediaDevices.enumerateDevices()
         .then(listDevicesVideo)
         .then(getStreamVideo)
-        .then(function (stream) {
-            videoTakePic.srcObject = stream;
-            videoTakePice.play();
+        .then(function (mediaStream) {
+            videoTakePic.srcObject = mediaStream;
+            videoTakePic.onloadedmetadata = function(e) {
+                videoTakePic.play();
+            };
         })
         .catch(showErrorCamera);
     
