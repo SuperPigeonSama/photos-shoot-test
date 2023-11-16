@@ -8,7 +8,8 @@
         .then(function (stream) {
             videoTakePic.srcObject = stream;
             videoTakePice.play();
-        });
+        })
+        .catch(showErrorCamera);
     
     function listDevicesVideo(deviceInfos) {
       window.deviceInfos = deviceInfos; // make available to console
@@ -32,8 +33,7 @@
       const constraints = {
         video: {deviceId: listDevicesSupported.length ? listDevicesSupported[0] : undefined}
       };
-      return navigator.mediaDevices.getUserMedia(constraints).
-        then(gotStream).catch(handleError);
+      return navigator.mediaDevices.getUserMedia(constraints);
     }
 
     document.querySelector(".clickPhoto").addEventListener("click", function() {
