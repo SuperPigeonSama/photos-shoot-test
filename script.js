@@ -1,21 +1,29 @@
     const videoTakePic = document.querySelector('.player');
     const canvasTakePic = document.querySelector('.photo');
 
-    navigator.mediaDevices
-        .enumerateDevices()
-        .then(devices => {
-            var videoDevices = [0,0];
-            var videoDeviceIndex = 0;
-            devices.forEach(function(device) {
-                console.log(device);
-                if (device.kind == "videoinput") {
-                    videoDevices[videoDeviceIndex++] =  device.deviceId;    
-                }
+    if (navigator.getUserMedia && (window as any).MediaStreamTrack) {
+        navigator.mediaDevices(MediaStreamTrack as any).getSources((sources: SourceInfo[]) => {
+    
+            this.videoSources = sources.filter((source: SourceInfo) => {
+              return source.kind === 'video';
+              // or source.facing === 'environment'
             });
-            
-            const cameraConstraints =  { deviceId: { exact: videoDevices[1] } };
-            return navigator.mediaDevices
-                .getUserMedia(cameraConstraints);
+            // console.log('got video sources', this.videoSources);
+    
+            try {
+              const rearCameraDevice = this.videoSources.find((device: SourceInfo) => device.facing === 'environment');
+              const anyCameraDevice = this.videoSources[0];
+              const videoConstraints = {
+                video: {
+                  mandatory: {
+                    sourceId: rearCameraDevice.id || anyCameraDevice.id
+                  }
+                }
+              };
+              return navigator.mediaDevices.getUserMedia(<any>videoConstraints);
+            } catch (error) {
+                showErrorCamera();
+            }
         })
         .then(function(mediaStream) {  
           if (window.webkitURL) {
@@ -28,8 +36,11 @@
           };
         })
         .catch(function(err) {
-            videoTakePic.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
+            showErrorCamera();
         });
+    } else {
+        showErrorCamera();
+    }
 
     document.querySelector(".clickPhoto").addEventListener("click", function() {
       takePhoto();
@@ -56,4 +67,8 @@
             img.src = window.URL.createObjectUrl(blob);
           };
         };
+    }
+
+    function showErrorCamera() {
+        videoTakePic.html = "<strong>Erreur lors de la récupération de la caméra.</strong>";
     }
