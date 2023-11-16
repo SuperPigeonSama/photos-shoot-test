@@ -2,21 +2,15 @@
     const canvasTakePic = document.querySelector('.photo');
 
     if (navigator.getUserMedia) {
-        navigator.mediaDevices(MediaStreamTrack).getSources((sources: SourceInfo[]) => {
+        navigator.mediaDevices(MediaStreamTrack).getSources((sources) => {
     
-            this.videoSources = sources.filter((source: SourceInfo) => {
-              return source.facing === 'environment';
+            this.videoSources = sources.filter((source) => {
+              return source.kind === 'video';
             });
-            
-            if (!this.videoSources) {
-                this.videoSources = sources.filter((source: SourceInfo) => {
-                  return source.kind === 'video';
-                });
-            }
             console.log('got video sources', this.videoSources);
     
             try {
-              const rearCameraDevice = this.videoSources.find((device: SourceInfo) => device.facing === 'environment');
+              const rearCameraDevice = this.videoSources.find((device) => device.facing === 'environment');
               const anyCameraDevice = this.videoSources[0];
               const videoConstraints = {
                 video: {
@@ -25,7 +19,7 @@
                   }
                 }
               };
-              return navigator.mediaDevices.getUserMedia(<any>videoConstraints);
+              return navigator.mediaDevices.getUserMedia(videoConstraints);
             } catch (error) {
                 showErrorCamera();
             }
