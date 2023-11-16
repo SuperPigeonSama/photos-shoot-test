@@ -1,46 +1,39 @@
     const videoTakePic = document.querySelector('.player');
     const canvasTakePic = document.querySelector('.photo');
+    const listDevicesSupported = [];
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getSources((sources) => {
-    
-            this.videoSources = sources.filter((source) => {
-              return source.kind === 'video';
-            });
-            console.log('got video sources', this.videoSources);
-    
-            try {
-              const rearCameraDevice = this.videoSources.find((device) => device.facing === 'environment');
-              const anyCameraDevice = this.videoSources[0];
-              const videoConstraints = {
-                video: {
-                  mandatory: {
-                    sourceId: rearCameraDevice.id || anyCameraDevice.id
-                  }
-                }
-              };
-              return navigator.mediaDevices.getUserMedia(videoConstraints);
-            } catch (error) {
-                showErrorCamera();
-            }
-        })
-        .then(function(mediaStream) {  
-          if (window.webkitURL) {
-            video.src = window.webkitURL.createObjectURL(mediaStream);
-          } else if (video.srcObject !== undefined) {
-            video.srcObject = stream;
-          } else {
-            videoTakePic.srcObject = mediaStream;
-          }
-          videoTakePic.onloadedmetadata = function(e) {
-            videoTakePic.play();
-          };
-        })
-        .catch(function(err) {
-            showErrorCamera();
+    navigator.mediaDevices.enumerateDevices()
+        .then(listDevicesVideo)
+        .then(getStreamVideo)
+        .then(function (stream) {
+            videoTakePic.srcObject = stream;
+            videoTakePice.play();
         });
-    } else {
-        showErrorCamera();
+    
+    function listDevicesVideo(deviceInfos) {
+      window.deviceInfos = deviceInfos; // make available to console
+      for (const deviceInfo of deviceInfos) {
+        if (deviceInfo.kind === 'videoinput') {
+          if(deviceInfo.facing) {
+            listDevicesSupported.unshift(deviceInfo.deviceId);
+          } else {
+            listDevicesSupported.push(deviceInfo.deviceId);
+          }
+        }
+      }
+    }
+    
+    function getStreamVideo() {
+      if (window.stream) {
+        window.stream.getTracks().forEach(track => {
+          track.stop();
+        });
+      }
+      const constraints = {
+        video: {deviceId: listDevicesSupported.length ? listDevicesSupported[0] : undefined}
+      };
+      return navigator.mediaDevices.getUserMedia(constraints).
+        then(gotStream).catch(handleError);
     }
 
     document.querySelector(".clickPhoto").addEventListener("click", function() {
