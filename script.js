@@ -40,7 +40,8 @@
       const videoConstraints = {
         video: listDevicesSupported.length ? { deviceId: listDevicesSupported[0] } : true
       };
-        console.lof(videoConstraints);
+    
+      console.log(videoConstraints);
       return navigator.mediaDevices.getUserMedia(constraints);
     }
 
