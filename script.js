@@ -1,16 +1,29 @@
     const videoTakePic = document.querySelector('.player');
     const canvasTakePic = document.querySelector('.photo');
 
-    navigator.mediaDevices.getUserMedia({video: { facingMode: { exact: "environment" } } })
-    .then(function(mediaStream) {
-      videoTakePic.srcObject = mediaStream;
-      videoTakePic.onloadedmetadata = function(e) {
-        videoTakePic.play();
-      };
-    })
-    .catch(function(err) {
-        videoTakePic.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
-    });
+    navigator.mediaDevices
+        .enumerateDevices()
+        .then(devices => {
+            var videoDevices = [0,0];
+            var videoDeviceIndex = 0;
+            devices.forEach(function(device) {
+                if (device.kind == "videoinput") {  
+                    videoDevices[videoDeviceIndex++] =  device.deviceId;    
+                }
+            });
+            
+            const cameraConstraints =  { deviceId: { exact: videoDevices[1] } 
+            navigator.mediaDevices.getUserMedia(cameraConstraints)
+                .then(function(mediaStream) {
+                  videoTakePic.srcObject = mediaStream;
+                  videoTakePic.onloadedmetadata = function(e) {
+                    videoTakePic.play();
+                  };
+            })
+            .catch(function(err) {
+                videoTakePic.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
+            });
+        };
 
     document.querySelector(".clickPhoto").addEventListener("click", function() {
       takePhoto();
