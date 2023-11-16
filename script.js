@@ -12,7 +12,7 @@
                 }
             });
             
-            const cameraConstraints =  { deviceId: { exact: videoDevices[1] };
+            const cameraConstraints =  { deviceId: { exact: videoDevices[1] } };
         };
 
             
