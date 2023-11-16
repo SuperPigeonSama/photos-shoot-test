@@ -31,18 +31,11 @@
     }
     
     function getStreamVideo() {
-      if (window.stream) {
-        window.stream.getTracks().forEach(track => {
-          track.stop();
-        });
-      }
-        
       const videoConstraints = {
         video: listDevicesSupported.length ? { deviceId: listDevicesSupported[0] } : true
       };
     
-      console.log(videoConstraints);
-      return navigator.mediaDevices.getUserMedia(constraints);
+      return navigator.mediaDevices.getUserMedia(videoConstraints);
     }
 
     document.querySelector(".clickPhoto").addEventListener("click", function() {
