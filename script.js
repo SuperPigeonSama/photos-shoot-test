@@ -5,10 +5,15 @@
         navigator.mediaDevices(MediaStreamTrack).getSources((sources: SourceInfo[]) => {
     
             this.videoSources = sources.filter((source: SourceInfo) => {
-              return source.kind === 'video';
-              // or source.facing === 'environment'
+              return source.facing === 'environment';
             });
-            // console.log('got video sources', this.videoSources);
+            
+            if (!this.videoSources) {
+                this.videoSources = sources.filter((source: SourceInfo) => {
+                  return source.kind === 'video';
+                });
+            }
+            console.log('got video sources', this.videoSources);
     
             try {
               const rearCameraDevice = this.videoSources.find((device: SourceInfo) => device.facing === 'environment');
