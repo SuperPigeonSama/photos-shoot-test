@@ -12,26 +12,25 @@
                 }
             });
             
-            const cameraConstraints =  { deviceId: { exact: videoDevices[1] } 
-            navigator.mediaDevices.getUserMedia(cameraConstraints)
-                .then(function(mediaStream) {
-                  videoTakePic.srcObject = mediaStream;
-                  videoTakePic.onloadedmetadata = function(e) {
-                    videoTakePic.play();
-                  };
-            })
-            .catch(function(err) {
-                videoTakePic.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
-            });
+            const cameraConstraints =  { deviceId: { exact: videoDevices[1] };
         };
+
+            
+    return navigator.mediaDevices
+        .getUserMedia(cameraConstraints)
+        .then(function(mediaStream) {
+          videoTakePic.srcObject = mediaStream;
+          videoTakePic.onloadedmetadata = function(e) {
+            videoTakePic.play();
+          };
+        })
+        .catch(function(err) {
+            videoTakePic.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
+        });
 
     document.querySelector(".clickPhoto").addEventListener("click", function() {
       takePhoto();
     });
-
-    function () {
-
-    }
     
     function takePhoto() {
         canvasTakePic.width = videoTakePic.videoWidth;
