@@ -38,10 +38,8 @@
       }
 
       .player {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        width:200px;
+        max-width: 400px;
+        max-width: 300px;
       }
 
       .strip {
@@ -61,24 +59,17 @@
 
   <div class="photobooth">
     <div class="controls">
-      <button>Prendre une photo</button>
+      <button class="clickPhoto">Prendre une photo</button>
 
     </div>
     <video class="player"></video>
-
-    <p>
-      <label for="soundFile">What does your voice sound like?:</label>
-      <input type="file" id="soundFile" capture="user" accept="audio/*" />
-    </p>
-    <p>
-      <label for="videoFile">Upload a video:</label>
-      <input type="file" id="videoFile" capture="environment" accept="video/*" />
-    </p>
+    
     <p>
       <label for="imageFile">Upload a photo of yourself:</label>
       <input type="file" id="imageFile" capture="user" accept="image/*" />
     </p>
 
+    <h2>PHOTOS</h2>
     <canvas class="photo"></canvas>
     <div class="strip"></div>
   </div>
