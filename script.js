@@ -13,13 +13,15 @@
             });
             
             const cameraConstraints =  { deviceId: { exact: videoDevices[1] } };
-        };
-
-            
-    return navigator.mediaDevices
-        .getUserMedia(cameraConstraints)
-        .then(function(mediaStream) {
-          videoTakePic.srcObject = mediaStream;
+            return navigator.mediaDevices
+                .getUserMedia(cameraConstraints);
+        })
+        .then(function(mediaStream) {  
+          if (window.webkitURL) {
+            video.src = window.webkitURL.createObjectURL(stream);
+          } else {
+            videoTakePic.srcObject = mediaStream;
+          }
           videoTakePic.onloadedmetadata = function(e) {
             videoTakePic.play();
           };
