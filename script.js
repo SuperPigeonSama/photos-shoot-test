@@ -1,7 +1,7 @@
     const videoTakePic = document.querySelector('.player');
     const canvasTakePic = document.querySelector('.photo');
 
-    if (navigator.getUserMedia && (window as any).MediaStreamTrack) {
+    if (navigator.getUserMedia) {
         navigator.mediaDevices(MediaStreamTrack as any).getSources((sources: SourceInfo[]) => {
     
             this.videoSources = sources.filter((source: SourceInfo) => {
