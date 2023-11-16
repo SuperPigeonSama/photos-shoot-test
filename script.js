@@ -20,7 +20,7 @@
         })
         .then(function(mediaStream) {  
           if (window.webkitURL) {
-            video.src = window.webkitURL.createObjectURL(stream);
+            video.src = window.webkitURL.createObjectURL(mediaStream);
           } else {
             videoTakePic.srcObject = mediaStream;
           }
