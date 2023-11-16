@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <title>Utiliser la webcam et prendre une photo</title>
+    
+    <style>
+      html {
+        box-sizing: border-box;
+      }
+
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+
+      html {
+        font-size: 10px;
+        background: #ffc600;
+      }
+
+      .photobooth {
+        background: white;
+        max-width: 150rem;
+        margin: 2rem auto;
+        border-radius: 2px;
+      }
+
+      /*clearfix*/
+      .photobooth:after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+
+      .photo {
+        width: 100%;
+        float: left;
+      }
+
+      .player {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width:200px;
+      }
+
+      /*
+        Strip!
+      */
+
+      .strip {
+        padding: 2rem;
+      }
+
+      .strip img {
+        width: 100px;
+        overflow-x: scroll;
+        padding: 0.8rem 0.8rem 2.5rem 0.8rem;
+        box-shadow: 0 0 3px rgba(0,0,0,0.2);
+        background: white;
+      }
+    </style>
+</head>
+<body>
+
+  <div class="photobooth">
+    <div class="controls">
+      <button>Prendre une photo</button>
+
+    </div>
+    <video class="player"></video>
+
+    <canvas class="photo"></canvas>
+    <div class="strip"></div>
+  </div>
+
+  <script>
+    const video = document.querySelector('.player');
+    const canvas = document.querySelector('.photo');
+    const ctx = canvas.getContext('2d');
+    const strip = document.querySelector('.strip');
+    const snap = document.querySelector('.snap'); 
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function(mediaStream) {
+      video.srcObject = mediaStream;
+      video.onloadedmetadata = function(e) {
+        video.play();
+      };
+    })
+    .catch(function(err) {
+        //video.html += "<strong>Erreur lors de la récupération de la caméra.</strong>";
+    });
+
+    function takePhoto() {
+        var canvas = document.getElementById("canvas");
+        var video = document.querySelector("video");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas
+          .getContext("2d")
+          .drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+      
+        // Création de l'image à stocker
+        const playImage = new Image();
+        playImage.src = "path to image asset";
+        playImage.onload = () => {
+          const startX = video.videoWidth / 2 - playImage.width / 2;
+          const startY = video.videoHeight / 2 - playImage.height / 2;
+          canvas
+            .getContext("2d")
+            .drawImage(playImage, startX, startY, playImage.width, playImage.height);
+          canvas.toBlob() = (blob) => {
+            const img = new Image();
+            img.src = window.URL.createObjectUrl(blob);
+          };
+        };
+    }
+  </script>
+</body>
+</html>
