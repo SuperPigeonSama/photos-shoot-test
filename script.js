@@ -20,8 +20,6 @@
     });
     
     function takePhoto() {
-        var canvas = document.getElementById("canvas");
-        var video = document.querySelector("video");
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas
