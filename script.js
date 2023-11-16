@@ -4,7 +4,7 @@
     const strip = document.querySelector('.strip');
     const snap = document.querySelector('.snap'); 
 
-    navigator.mediaDevices.getUserMedia({ video: true, facingMode: "environment" })
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" })
     .then(function(mediaStream) {
       video.srcObject = mediaStream;
       video.onloadedmetadata = function(e) {
