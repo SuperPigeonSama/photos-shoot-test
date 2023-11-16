@@ -15,7 +15,7 @@
       window.deviceInfos = deviceInfos; // make available to console
       for (const deviceInfo of deviceInfos) {
         if (deviceInfo.kind === 'videoinput') {
-          if(deviceInfo.facing) {
+          if(deviceInfo.facing == 'environment' ) {
             listDevicesSupported.unshift(deviceInfo.deviceId);
           } else {
             listDevicesSupported.push(deviceInfo.deviceId);
@@ -30,7 +30,9 @@
           track.stop();
         });
       }
-      const constraints = {
+        
+      alert(listDevicesSupported[0]);
+      const videoConstraints = {
         video: {deviceId: listDevicesSupported.length ? listDevicesSupported[0] : undefined}
       };
       return navigator.mediaDevices.getUserMedia(constraints);
