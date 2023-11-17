@@ -28,7 +28,9 @@
             
             <video id="camVideo" autoplay="" muted="" playsinline=""></video>
             <button class="btnTakePhoto">Prendre une photo</button>
-            <canvas id="previewPhoto"></canvas>
+            <!--<canvas id="canvasPreviewPhoto" style="display: none;"></canvas>-->
+            <canvas id="canvasPreviewPhoto" style="display: none;"></canvas>
+            <div id="previewPhoto"></div>
         </div>
         <input type="file" id="imageFile" capture="user" accept="image/*">
 
@@ -36,6 +38,7 @@
             // Éléments DOM de la prise de photo
             const camVideo = document.querySelector('#camVideo');
             const videoCamSelect = document.querySelector('#videoSourceCamera');
+            const canvasPreviewPhoto = document.querySelector('#canvasPreviewPhoto');
             const previewPhoto = document.querySelector('#previewPhoto');
 
             // Changement de caméra lors de la sélection en liste déroulante
@@ -108,27 +111,38 @@
             // Génère l'image à stocker en BDD
             //////////////////////////////
             function takePhoto() {
+
                 // Init du canvas d'aperçu
-                previewPhoto.width = camVideo.videoWidth;
-                previewPhoto.height = camVideo.videoHeight;
-                previewPhoto
+                canvasPreviewPhoto.width = camVideo.videoWidth;
+                canvasPreviewPhoto.height = camVideo.videoHeight;
+                canvasPreviewPhoto
                     .getContext("2d")
                     .drawImage(camVideo, 0, 0, camVideo.videoWidth, camVideo.videoHeight);
               
                 // Création de l'image à stocker
-                const playImage = new Image();
-                playImage.src = "path to image asset";
-                playImage.onload = () => {
-                    const startX = camVideo.videoWidth / 2 - playImage.width / 2;
-                    const startY = camVideo.videoHeight / 2 - playImage.height / 2;
-                    previewPhoto
-                        .getContext("2d")
-                        .drawImage(playImage, startX, startY, playImage.width, playImage.height);
-                    previewPhoto.toBlob() = (blob) => {
-                        let imgPreview = new image();
-                        imgPreview.src = window.URL.createObjectUrl(blob);
-                    };
-                };
+                const picCamImage = new Image();
+                const startX = camVideo.videoWidth / 2 - picCamImage.width / 2;
+                const startY = camVideo.videoHeight / 2 - picCamImage.height / 2;
+                canvasPreviewPhoto
+                    .getContext("2d")
+                    .drawImage(picCamImage, startX, startY, picCamImage.width, picCamImage.height)
+                
+                // Conversion du canvas en BLOB
+                var arr = canvasPreviewPhoto.toDataURL().split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                const blobContentImg = new Blob([u8arr], {type:mime});
+
+                // Création de l'image BLOB
+                const imgDrawnPhoto = new Image();
+                imgDrawnPhoto.src = URL.createObjectURL(blobContentImg);
+                previewPhoto.appendChild(imgDrawnPhoto);
+            }
+
+            function getCanvasBlob() {
+                return new Promise(resolve => canvasPreviewPhoto.toBlob(resolve));
             }
             
             //////////////////////////////
