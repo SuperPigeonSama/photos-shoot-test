@@ -22,11 +22,8 @@
         
         <div id="container">
             <div class="select">
-                <label for="audioSource">Audio source: </label><select id="audioSource"><option value="default">Par défaut - Headset Microphone (HyperX Virtual Surround Sound) (0951:16a4)</option><option value="communications">Communications - Headset Microphone (HyperX Virtual Surround Sound) (0951:16a4)</option><option value="4098fed25896ed28235dd52b062676564d1ff8a0813d25f4782997e49415b8dd">Microphone Array (Intel® Smart Sound Technology (Intel® SST))</option><option value="e474f5f0dfe793220c23c9c278617175d1350261e845c6d55d7a9ae580fffed3">Headset Microphone (HyperX Virtual Surround Sound) (0951:16a4)</option></select>
-            </div>
-            
-            <div class="select">
-                <label for="videoSource">Video source: </label><select id="videoSource"><option value="26253550c36691e902a0c3931c825c06299202b890fe1bbb9573ef3a26c89c59">HP HD Camera (04f2:b669)</option></select>
+                <label for="videoSource">Video source: </label>
+                <select id="videoSourceCamera"></select>
             </div>
             
             <video id="camVideo" autoplay="" muted="" playsinline=""></video>
@@ -34,7 +31,7 @@
 
         <script>
             const camVideo = document.querySelector('#camVideo');
-            const videoCamSelect = document.querySelector('#videoSource');
+            const videoCamSelect = document.querySelector('#videoSourceCamera');
 
             // Comportement de la caméra
             videoCamSelect.onchange = findStream;
@@ -64,7 +61,7 @@
                     });
                 }
                 const videoSource = videoCamSelect.value;
-                const videoConstraints = { video: true };
+                const videoConstraints = { video: { deviceId: videoSource ? {exact: videoSource} : undefined } };
 
                 return navigator.mediaDevices.getUserMedia(videoConstraints).
                     then(loadStream)
