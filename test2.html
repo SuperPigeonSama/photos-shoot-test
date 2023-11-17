@@ -48,9 +48,9 @@
             function getDevicesOptions(deviceInfos) {
                 window.deviceInfos = deviceInfos;
                 for (const deviceInfo of deviceInfos) {
+                    const option = document.createElement('option');
+                    option.value = deviceInfo.deviceId;
                     if (deviceInfo.kind === 'videoinput') {
-                        const option = document.createElement('option');
-                        option.value = deviceInfo.deviceId;
                         option.text = `Camera ${videoCamSelect.length + 1}`;
                         videoCamSelect.appendChild(option);
                     }
@@ -72,9 +72,7 @@
             }
 
             function loadStream(stream) {
-            window.stream = stream;
-            videoCamSelect.selectedIndex = [...videoCamSelect.options].
-                findIndex(option => option.text === stream.getVideoTracks()[0].label);
+                window.stream = stream;
                 camVideo.srcObject = stream;
             }
 
