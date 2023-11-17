@@ -20,33 +20,45 @@
     
     <body>
         
-        <div id="container">
+        <div id="takePhotoContainer">
             <div class="select">
                 <label for="videoSource">Video source: </label>
                 <select id="videoSourceCamera"></select>
             </div>
             
             <video id="camVideo" autoplay="" muted="" playsinline=""></video>
+            <button class="btnTakePhoto">Prendre une photo</button>
+            <canvas id="previewPhoto"></canvas>
         </div>
+        <input type="file" id="imageFile" capture="user" accept="image/*">
 
         <script>
+            // Éléments DOM de la prise de photo
             const camVideo = document.querySelector('#camVideo');
             const videoCamSelect = document.querySelector('#videoSourceCamera');
+            const previewPhoto = document.querySelector('#previewPhoto');
 
-            // Comportement de la caméra
+            // Changement de caméra lors de la sélection en liste déroulante
             videoCamSelect.onchange = findStream;
 
-            // Traitement de la caméra
+            //////////////////////////////
+            // Lance l'ensemble des traitements de la caméra
+            //////////////////////////////
             findStream()
-                .then(() => navigator.mediaDevices.enumerateDevices())
+                .then(() => navigator.mediaDevices.enumerateDevices()) // Liste les streams caméra
                 .then(getDevicesOptions)
                 .catch(handleErrorVideo);
-
+                
+            //////////////////////////////
+            // Liste les caméra dispo dans la liste déroulante
+            //////////////////////////////
             function getDevicesOptions(deviceInfos) {
                 window.deviceInfos = deviceInfos;
                 for (const deviceInfo of deviceInfos) {
                     const option = document.createElement('option');
                     option.value = deviceInfo.deviceId;
+
+                    // Si périph vidéo détecté, on l'ajoute
                     if (deviceInfo.kind === 'videoinput') {
                         option.text = `Camera ${videoCamSelect.length + 1}`;
                         videoCamSelect.appendChild(option);
@@ -54,27 +66,76 @@
                 }
             }
 
+            //////////////////////////////
+            // Récupération du flux vidéo via les média trouvés
+            //////////////////////////////
             function findStream() {
+                // On remove les erreurs caméra si existantes
+                document.querySelectorAll("#takePhotoContainer .errorMsgCam").forEach(elt => elt.remove());
+
+                // Coupe le flux vidéo si en cours
                 if (window.stream) {
-                    window.stream.getTracks().forEach(track => {
-                    track.stop();
-                    });
+                    window.stream.getTracks().forEach(track => track.stop());
                 }
+
+                // Options vidéo
                 const videoSource = videoCamSelect.value;
                 const videoConstraints = { video: { deviceId: videoSource ? {exact: videoSource} : undefined } };
 
+                // Récupération du flux
                 return navigator.mediaDevices.getUserMedia(videoConstraints).
                     then(loadStream)
                     .catch(handleErrorVideo);
             }
 
+            /////////////////////////////
+            // Init et lance le flux vidéo choisi
+            //////////////////////////////
             function loadStream(stream) {
                 window.stream = stream;
                 camVideo.srcObject = stream;
+                camVideo.play();
             }
 
+            //////////////////////////////
+            // Clic sur "Prendre une photo"
+            //////////////////////////////
+            document.querySelector(".btnTakePhoto").addEventListener("click", function() {
+                takePhoto();
+            });
+            
+            //////////////////////////////
+            // Génère l'image à stocker en BDD
+            //////////////////////////////
+            function takePhoto() {
+                // Init du canvas d'aperçu
+                previewPhoto.width = camVideo.videoWidth;
+                previewPhoto.height = camVideo.videoHeight;
+                previewPhoto
+                    .getContext("2d")
+                    .drawImage(camVideo, 0, 0, camVideo.videoWidth, camVideo.videoHeight);
+              
+                // Création de l'image à stocker
+                const playImage = new Image();
+                playImage.src = "path to image asset";
+                playImage.onload = () => {
+                    const startX = camVideo.videoWidth / 2 - playImage.width / 2;
+                    const startY = camVideo.videoHeight / 2 - playImage.height / 2;
+                    previewPhoto
+                        .getContext("2d")
+                        .drawImage(playImage, startX, startY, playImage.width, playImage.height);
+                    previewPhoto.toBlob() = (blob) => {
+                        let imgPreview = new image();
+                        imgPreview.src = window.URL.createObjectUrl(blob);
+                    };
+                };
+            }
+            
+            //////////////////////////////
+            // Génère l'image à stocker en BDD
+            //////////////////////////////
             function handleErrorVideo() {
-                camVideo.html += "<p>Erreur lors de la détection de caméra</p>"
+                camVideo.html += `<p class="errorMsgCam">Erreur lors de la détection de caméra</p>`;
             }
         </script>
     </body>
